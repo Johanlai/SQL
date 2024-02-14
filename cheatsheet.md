@@ -60,6 +60,31 @@
 ---
 # Examples <a name="eg"/> 
 ```sql
+SELECT
+    customerTable.customer_id,
+    customerTable.firstname,
+    customerTable.lastname,
+    AVG(cast(productCount.Pcount as decimal(10,2))) AS avg_Pcount
+FROM (
+    SELECT customer_id, firstname, lastname
+    FROM customer
+) customerTable
+
+LEFT JOIN 
+
+(SELECT order_id, customer_id FROM purchase_order) purchaseTable
+ON customerTable.customer_id = purchaseTable.customer_id
+
+LEFT JOIN
+
+(SELECT order_id, COUNT(product_id) AS Pcount FROM order_product
+GROUP BY order_id) productCount
+ON purchaseTable.order_id = productCount.order_id
+
+GROUP BY customerTable.customer_id, customerTable.firstname, customerTable.lastname
+HAVING avg_Pcount>2
+```
+```sql
 SELECT 
 	country.country_name_eng,
 	SUM(CASE WHEN call.id IS NOT NULL THEN 1 ELSE 0 END) AS calls,
