@@ -60,6 +60,17 @@
 ---
 # Examples <a name="eg"/> 
 ```sql
+select N,
+       case when P is null then 'Root'
+            when (select count(*) from BST where P = B.N) > 0 then  
+            'Inner'
+            else 'Leaf'
+       end
+from BST as B 
+order by N
+;
+```
+```sql
 SELECT
     customerTable.customer_id,
     customerTable.firstname,
